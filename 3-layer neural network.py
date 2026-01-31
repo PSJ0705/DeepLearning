@@ -33,4 +33,5 @@ def forward(network, x):
 network = init_network()
 x = np.array([1.0, 0.5])
 y = forward(network, x)
+
 print(y)

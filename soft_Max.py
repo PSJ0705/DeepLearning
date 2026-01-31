@@ -6,3 +6,5 @@ def softmax(x):
     y = e_x / sum_exp
     return y
 
+def main()
+
