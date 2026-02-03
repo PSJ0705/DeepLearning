@@ -1,7 +1,7 @@
 import numpy as np
 
 def sum_squares_error(y, t):        # 오차제곱합
-    return 0.5 * np.sum((y -t)**2)
+    return 0.5 * np.sum((y - t)**2)
 
 def cross_entropy_error(y, t):      # 교차 엔트로피
     delta = 1e-7
