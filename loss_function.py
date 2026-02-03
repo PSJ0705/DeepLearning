@@ -12,5 +12,11 @@ def cross_entropy_loss_func(y, t):      #미니배치를 지원하는 교차 엔
         t = t.reshape(1, t.size)
         y = y.reshape(1, y.size)
 
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+
     batch_size = y.shape[0]
     return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))

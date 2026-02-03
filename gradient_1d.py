@@ -11,22 +11,31 @@ def function_1(x):                  # 수치 미분을 이용하기 위한 간�
 def function_2(x):
     return x[0]**2 + x[1]**2        # 또는 np.sum(x**2)
 
-def numerical_gradient(f, x):       # x0, x1의 편미분을 벡터로 정리한 기울기
-    h = 1e-4
-    grad = np.zeros_like(x)         # x와 형상이 같은 배열을 생성
 
-    for idx in range(x.size):
+def numerical_gradient(f, x):       # 수치 미분 : 배치 처리가 되는 함수
+    h = 1e-4
+    grad = np.zeros_like(x)
+
+    # 다차원 배열(행렬)의 각 원소를 하나씩 방문하기 위한 반복자(Iterator)
+    it = np.nditer(x, flags=['multi_index'], op_flags=['readwrite'])
+
+    while not it.finished:
+        idx = it.multi_index
         tmp_val = x[idx]
-        # f(x+h) 계산
-        x[idx] = tmp_val + h
+
+        # f(x+h)
+        x[idx] = float(tmp_val) + h
         fxh1 = f(x)
 
-        #f(x-h)계산
-        x[idx] = tmp_val - h
+        # f(x-h)
+        x[idx] = float(tmp_val) - h
         fxh2 = f(x)
 
-        grad[idx] = (fxh1 - fxh2) / (2*h)
-        x[idx] = tmp_val            # 값 복원
+        grad[idx] = (fxh1 - fxh2) / (2 * h)
+
+        x[idx] = tmp_val
+        it.iternext()
+
     return grad
 
 def gradient_descent(f, init_x, lr = 0.01, step_num = 1000):        #경사 하강법, f는 최적화하려는 함수, init_x는 초깃값, learning rate는 학습률, step num = 경사법에 따른 반복회수
@@ -41,6 +50,7 @@ def gradient_descent(f, init_x, lr = 0.01, step_num = 1000):        #경사 하�
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
 x = np.arange(0.0, 20.0, 0.1)
 y = function_1(x)
 
@@ -50,3 +60,4 @@ plt.ylabel("f(x)")
 plt.plot(x, y)
 plt.show()
 
+"""
