@@ -82,10 +82,11 @@ class SoftmaxWithLoss:
         dx = (self.y - self.t) / batch_size     # (예측값 - 정답) / 배치 크기 => 배치의 오차를 다 합친 값이므로, 데이터 1개당 평균 오차로 나눠서 전달해야 함
 
         return dx
-
+'''
 x = np.array([[1.0, -0.5], [-2.0, 3.0]])
 
 print(x)
 
 mask = (x <= 0)
 print(mask)
+'''
