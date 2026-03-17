@@ -13,7 +13,12 @@ class Convolution:
         self.stride = stride
         self.pad = pad
 
+        self.x = None
+        self.col = None
+        self.col_W = None
+
     def forward(self, x):
+        self.x = x
         # 1. 필터와 입력 데이터의 형태를 변수에 저장한다.
         FN, C, FH, FW = self.W.shape
         N, C, H, W = x.shape
@@ -24,9 +29,11 @@ class Convolution:
 
         # 3. im2col을 이용해 4차원 입력 데이터(x)를 2차원 엑셀표로 편다.
         col = im2col(x, FH, FW, self.stride, self.pad)
+        self.col = col
 
         # 4. 4차원 필터(W)도 2차원으로 편다
         col_W = self.W.reshape(FN, -1).T
+        self.col_W = col_W
         """
         reshape(FN, -1) : 현재 필터는 (필터 개수, 채널, 세로, 가로) 모양이다. 이걸 reshape(FN, -1)로 묶어버리면,
         파이썬이 알아서 맨 앞은 필터 개수(FN)으로 놔두고, 나머지는 한즐로 쫙 펴서 2차원 표로 만들어준다.

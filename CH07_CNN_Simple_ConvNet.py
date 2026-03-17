@@ -18,6 +18,7 @@ from collections import OrderedDict
 from CH07_CNN_Conv import *
 from CH05_Layers import *
 from CH07_CNN_Pooling import *
+import pickle
 
 class SimpleConvNet:
     def __init__(self, input_dim = (1, 28, 28), conv_param = {'filter_num':30, 'filter_size':5, 'pad':0, 'stride':1}, hidden_size = 100, output_size = 10, weight_init_std = 0.01):
@@ -68,7 +69,7 @@ class SimpleConvNet:
     # loss(오차계산) : predict로 구한 예측 점수(y)와 실제 정답(t)를 최종 검사 역할인 last_layer에게 넘겨주어, 오차 점수를 계산해냄
     def loss(self, x, t):       # x : 입력 데이터, t : 정답 레이블
         y = self.predict(x)
-        return self.last_layer.loss(y, t)
+        return self.last_layer.forward(y, t)
 
     # gradient(역전파, 스스로 학습)
     def gradient(self, x, t):
@@ -97,8 +98,29 @@ class SimpleConvNet:
         grads['b3'] = self.layers['Affine2'].db
 
         return grads
+    def accuracy(self, x, t):
+        y = self.predict(x)
 
+        y = np.argmax(y, axis=1)
 
+        if t.ndim != 1:
+            t = np.argmax(t, axis=1)
+
+        correct_count = np.sum(y==t)
+
+        accuracy = correct_count / t.shape[0]
+
+        return accuracy
+
+    def save_params(self, file_name="params.pkl"):
+        with open(file_name, 'wb') as f:
+            pickle.dump(self.params, f)
+
+    def load_params(self, file_name="params.pkl"):
+        with open(file_name, 'rb') as f:
+            params = pickle.load(f)
+        for key, val in params.items():
+            self.params[key] = val
 
 
 

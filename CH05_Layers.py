@@ -51,7 +51,10 @@ class Affine:
         self.db = None
 
     def forward(self, x):
-        self.x = x                          # 역전파에서 쓰기 위해 입력값을 기억해 둠
+        self.original_x_shape = x.shape     # 1. 원래 모양(4차원) 기억하기
+        x = x.reshape(x.shape[0], -1)       # 2. 납작하게 2차원으로 펴기
+        self.x = x                          # 역전파에서 쓰기 위해 입력값을 기억해 둠 / 납작해진 x를 기억하기
+
         out = np.dot(x, self.W) + self.b    # 핵심 연산 : 행렬 곱 + 편향 덧셈
 
         return out
@@ -60,6 +63,8 @@ class Affine:
         dx = np.dot(dout,  self.W.T)        # .T : 전치행렬 (2,3) => (3,2)로 위치를 바꿈
         self.dW = np.dot(self.x.T, dout)    # 가중치 W를 얼마나 수정해야 할지 구해야 함
         self.db = np.sum(dout, axis=0)      # 편향 업데이트용
+
+        dx = dx.reshape(*self.original_x_shape)     # 계산이 끝난 dx를 원래 모양(4차원)으로 복구
 
         return dx
 
